@@ -4,7 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Category;
 use App\Models\Product;
+use App\Models\Supplier;
 
 class ProductSeeder extends Seeder
 {
@@ -13,9 +15,15 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
+        $makanan = Category::where('name', 'Makanan')->first();
+        $minuman = Category::where('name', 'Minuman')->first();
+        $sembako = Category::where('name', 'Sembako')->first();
+        $supplier1 = Supplier::where('name', 'PT Sumber Rezeki')->first();
+        $supplier2 = Supplier::where('name', 'CV Maju Jaya')->first();
+
         Product::create([
-        'category_id' => 1,
-        'supplier_id' => 1,
+        'category_id' => $makanan->id,
+        'supplier_id' => $supplier1->id,
         'barcode' => '899100000001',
         'name' => 'Indomie Goreng',
         'purchase_price' => 2500,
@@ -26,8 +34,8 @@ class ProductSeeder extends Seeder
         ]);
 
         Product::create([
-            'category_id' => 2,
-            'supplier_id' => 1,
+            'category_id' => $minuman->id,
+            'supplier_id' => $supplier1->id,
             'barcode' => '899100000002',
             'name' => 'Aqua Botol 600ml',
             'purchase_price' => 3000,
@@ -38,8 +46,8 @@ class ProductSeeder extends Seeder
         ]);
 
         Product::create([
-            'category_id' => 3,
-            'supplier_id' => 2,
+            'category_id' => $sembako->id,
+            'supplier_id' => $supplier2->id,
             'barcode' => '899100000003',
             'name' => 'Beras Ramos 5Kg',
             'purchase_price' => 65000,

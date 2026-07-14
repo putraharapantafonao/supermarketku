@@ -148,8 +148,4 @@ Route::get('/stock-movements', [StockMovementController::class, 'index'])
 Route::resource('users', UserController::class)
     ->middleware(['auth', 'role:Owner,Admin']);
 
-Route::middleware(['auth', 'role:Owner,Admin'])->group(function () {
-    Route::resource('users', UserController::class);
-});
-
 require __DIR__.'/auth.php';
