@@ -17,21 +17,6 @@
 
 ---
 
-## 🎓 Informasi Proyek Kuliah
-
-* **Mata Kuliah:** Pemrograman Web Lanjut (Kelas A1)
-* **Kelompok:** 6 (Enam)
-* **Tugas:** Tugas Besar / Proyek Akhir Sistem Informasi Kasir Modern
-
-### 👥 Anggota Kelompok:
-
-| No | Nama Anggota | NIM |
-|:--:|:---|:---:|
-| 1 | **Putra Harapan Tafonao** | 240170030 |
-| 2 | **Misbah Salsabilah** | 240170156 |
-| 3 | **Reva Andrianti** | 240170056 |
-
----
 
 ## 📌 Tentang SupermarketKu
 
