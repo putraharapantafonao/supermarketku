@@ -17,42 +17,190 @@
 
 ---
 
-
 ## 📌 Tentang SupermarketKu
 
-**SupermarketKu** adalah platform sistem kasir (*Point of Sales*) dan manajemen inventaris toko retail yang dirancang untuk memberikan kemudahan transaksi secara cepat, akurat, dan aman. Aplikasi ini mengintegrasikan pencatatan stok barang, transaksi kasir otomatis, hingga pelaporan omzet dalam satu dasbor terpusat.
+SupermarketKu adalah aplikasi web Point of Sale (POS) dan manajemen toko retail berbasis Laravel. Aplikasi ini dirancang untuk membantu pemilik toko, admin, kasir, dan staf gudang dalam mengelola penjualan, stok barang, pembelian, pelanggan, serta laporan usaha secara terintegrasi.
 
 ---
 
-## 👥 Sistem Hak Akses (Multi-User)
+## ✨ Fitur Utama
 
-Aplikasi ini dilengkapi dengan pengaman rute berbasis *Custom Middleware* (`CheckRole`) untuk memisahkan wewenang operasional staf toko berdasarkan 4 tingkatan hak akses dengan ID yang terstruktur:
-
-1. **Owner / Pemilik Toko (Role ID: 1)**
-   * Mengelola data semua pegawai/staf (Tambah, Edit, Hapus akun).
-   * Memantau grafik analisis penjualan dan statistik omzet harian/bulanan di Dasbor Utama.
-   * Akses penuh ke seluruh menu sistem (Produk, Kategori, Supplier, Pembelian Stok).
-   * Hak akses penuh untuk membuka halaman transaksi Kasir / POS.
-
-2. **Admin (Role ID: 2)**
-   * Memiliki akses operasional setara Owner untuk mengelola Master Data produk dan inventaris.
-   * Membantu pengelolaan akun pegawai di sistem (kecuali membuat atau memodifikasi akun Owner).
-
-3. **Kasir / Petugas Toko (Role ID: 3)**
-   * Akses langsung dikunci (*auto-redirect*) menuju halaman utama **Kasir / POS**.
-   * Melayani kelola keranjang belanja, *scan* barcode produk, kalkulasi pembayaran, dan cetak struk nota belanja.
-   * Menu sensitif seperti grafik keuangan dan manajemen staf disembunyikan dan diproteksi ketat dari akses URL manual.
-
-4. **Gudang / Logistik (Role ID: 4)**
-   * Berfokus pada manajemen inventaris, pemantauan batas minimum stok, pergerakan stok (*stock movements*), dan *stock opname*.
-   * Menu kasir dan laporan keuangan sensitif ditutup dari hak akses ini untuk menjaga validitas data internal.
+- Sistem kasir / POS untuk transaksi cepat dan terstruktur.
+- Pencatatan transaksi penjualan lengkap dengan detail item, diskon, pajak, dan total akhir.
+- Manajemen produk, kategori, supplier, pelanggan, dan promosi.
+- Pembelian stok dari supplier dan pencatatan pergerakan stok.
+- Laporan penjualan dalam format PDF dan Excel.
+- Hak akses berbasis peran: Owner, Admin, Kasir, dan Gudang.
+- Antarmuka modern berbasis Tailwind CSS.
 
 ---
 
-## 🚀 Fitur Utama
+## 👥 Hak Akses Pengguna
 
-* **Sistem Kasir Terkunci (POS):** Antarmuka transaksi dinamis dan responsif bagi kasir untuk mempercepat antrean belanja.
-* **Cetak Struk Thermal:** Desain struk belanja minimalis dengan perataan teks tengah (*center-aligned*) yang dioptimalkan untuk printer thermal ukuran 58mm/80mm.
-* **Kelola Pegawai Aman:** Manajemen user yang dilengkapi dengan proteksi *Mass Assignment Protection* (`$fillable`) dan pembatasan wewenang berjenjang.
-* **Manajemen Inventaris & Stock Opname:** Pemantauan sisa stok barang dan laporan supplier secara *real-time*.
-* **Visualisasi Dasbor Grafik:** Dasbor interaktif untuk melacak pergerakan omzet toko dalam 7 hari terakhir.
+Aplikasi ini memiliki sistem role-based access control dengan pembagian akses sebagai berikut:
+
+1. Owner / Pemilik Toko
+   - Mengelola seluruh data master.
+   - Memantau dashboard dan laporan penjualan.
+   - Mengakses fitur penuh aplikasi.
+
+2. Admin
+   - Mengelola produk, kategori, supplier, dan akun pengguna tertentu.
+   - Mengakses laporan serta fitur operasional inti.
+
+3. Kasir
+   - Mengakses halaman POS dan transaksi penjualan.
+   - Melakukan checkout, mencetak nota, dan melihat riwayat transaksi.
+
+4. Gudang / Logistik
+   - Mengelola pembelian stok, stock opname, dan stock movement.
+   - Memantau kondisi stok minimum.
+
+---
+
+## 🛠️ Teknologi yang Digunakan
+
+- Laravel 12
+- PHP 8.3 / 8.5
+- MySQL
+- Tailwind CSS
+- Vite
+- DomPDF untuk export PDF
+- Maatwebsite Excel untuk export Excel
+
+---
+
+## 🧱 ERD (Entity Relationship Diagram)
+
+Berikut gambaran relasi antar entitas utama dalam sistem SupermarketKu:
+
+```mermaid
+erDiagram
+    ROLES ||--o{ USERS : has
+    USERS ||--o{ TRANSACTIONS : records
+    USERS ||--o{ PURCHASES : manages
+    CUSTOMERS ||--o{ TRANSACTIONS : buys
+    TRANSACTIONS ||--|{ TRANSACTION_DETAILS : contains
+    PRODUCTS ||--o{ TRANSACTION_DETAILS : sold_in
+    PRODUCTS ||--o{ PURCHASE_DETAILS : purchased_in
+    PRODUCTS ||--o{ PROMOTIONS : has
+    PRODUCTS ||--o{ STOCK_MOVEMENTS : logs
+    CATEGORIES ||--o{ PRODUCTS : groups
+    SUPPLIERS ||--o{ PRODUCTS : supplies
+    SUPPLIERS ||--o{ PURCHASES : receives
+    PURCHASES ||--|{ PURCHASE_DETAILS : contains
+    TRANSACTIONS ||--|| PAYMENTS : has
+```
+
+### Penjelasan Relasi Inti
+
+- Satu role dapat memiliki banyak user.
+- Satu user dapat mencatat banyak transaksi dan banyak pembelian stok.
+- Satu customer dapat memiliki banyak transaksi.
+- Satu transaksi memiliki banyak detail transaksi.
+- Satu produk dapat muncul di banyak detail transaksi dan detail pembelian.
+- Satu produk dapat memiliki banyak promosi dan banyak catatan pergerakan stok.
+- Satu kategori memiliki banyak produk.
+- Satu supplier dapat memasok banyak produk dan menerima banyak pembelian.
+- Satu pembelian memiliki banyak detail pembelian.
+- Satu transaksi memiliki satu pembayaran.
+
+---
+
+## 🔗 Relasi Web / Alur Aplikasi
+
+Diagram berikut menunjukkan hubungan antar modul utama pada aplikasi web:
+
+```mermaid
+flowchart LR
+    A[Login] --> B[Dashboard]
+    B --> C[POS / Kasir]
+    B --> D[Master Data]
+    B --> E[Transaksi]
+    B --> F[Laporan]
+    D --> G[Produk]
+    D --> H[Kategori]
+    D --> I[Supplier]
+    D --> J[Customer]
+    C --> K[Checkout]
+    K --> L[Receipt / Struk]
+    B --> M[Purchase]
+    M --> N[Stock Movement]
+    M --> O[Stock Opname]
+    B --> P[Promosi]
+    B --> Q[User Management]
+```
+
+### Alur Bisnis Utama
+
+- Pengguna masuk melalui halaman login lalu diarahkan ke dashboard sesuai role.
+- Kasir mengakses POS untuk membuat transaksi, melakukan checkout, dan mencetak struk.
+- Admin/Owner mengelola data master seperti produk, kategori, supplier, customer, dan pengguna.
+- Gudang mengelola pembelian stok dan stock opname untuk menjaga ketersediaan barang.
+- Sistem menghasilkan laporan penjualan yang dapat diekspor ke PDF atau Excel.
+
+---
+
+## 📦 Struktur Modul Utama
+
+- Users & Roles
+- Categories
+- Suppliers
+- Products
+- Customers
+- Promotions
+- Transactions & Transaction Details
+- Purchases & Purchase Details
+- Stock Movements
+- Payments
+
+---
+
+## ▶️ Cara Menjalankan Aplikasi
+
+### Prerequisite
+
+- PHP 8.3+
+- Composer
+- MySQL
+- Node.js + npm
+
+### Langkah Instalasi
+
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+npm install
+npm run build
+php artisan serve
+```
+
+Setelah server berjalan, buka alamat berikut di browser:
+
+```bash
+http://127.0.0.1:8000
+```
+
+---
+
+## 🧪 Testing
+
+Untuk menjalankan pengujian aplikasi:
+
+```bash
+php artisan test
+```
+
+---
+
+## 📄 Lisensi
+
+Proyek ini menggunakan lisensi MIT.
+
+---
+
+## 🤝 Kontribusi
+
+Jika Anda ingin berkontribusi, silakan fork repository ini, buat branch fitur, lalu kirim pull request.
